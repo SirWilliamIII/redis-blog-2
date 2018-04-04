@@ -10,6 +10,7 @@ yarn-error.log*
 
 .idea/
 config/
+.vscode/
 
 # Runtime data
 pids
