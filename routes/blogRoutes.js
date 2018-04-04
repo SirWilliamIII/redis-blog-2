@@ -20,11 +20,16 @@ module.exports = app => {
 		const util = require('util')
 		client.get = util.promisify(client.get)
 
-		const cachedBlogs = client.get(req.user.id)
+		const cachedBlogs = await client.get(req.user.id)
+		if (cachedBlogs) {
+			console.log('SERVING FROM REDIS CACHE')
+			return res.send(JSON.parse(cachedBlogs))
+		}
 
 		const blogs = await Blog.find({ _user: req.user.id })
-
+		console.log('SERVING FROM DB')
 		res.send(blogs)
+		client.set(req.user.id, JSON.stringify(blogs))
 	})
 
 	app.post('/api/blogs', requireLogin, async (req, res) => {
