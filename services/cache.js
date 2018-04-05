@@ -8,7 +8,16 @@ client.get = util.promisify(client.get)
 
 const exec = mongoose.Query.prototype.exec
 
+mongoose.Query.prototype.cache = function() {
+	this._cache = true
+	return this
+}
+
 mongoose.Query.prototype.exec = async function() {
+	if (!this._cache) {
+		return exec.apply(this.arguments)
+	}
+
 	const key = JSON.stringify(
 		Object.assign({}, this.getQuery(), {
 			collection: this.mongooseCollection.name
@@ -18,9 +27,10 @@ mongoose.Query.prototype.exec = async function() {
 	const cacheValue = await client.get(key)
 	// Yes
 	if (cacheValue) {
-		console.log(cacheValue)
+		const doc = JSON.parse(cacheValue)
+		return Array.isArray(doc) ? doc.map(d => new this.model(d)) : new this.model(doc)
 	}
-
+	// ...No
 	const result = await exec.apply(this, arguments)
 	client.set(key, JSON.stringify(result))
 
