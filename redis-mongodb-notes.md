@@ -6,7 +6,7 @@
 
 ### Solution
 
-*   Hook into mongoose's execution process _.exec()_
+*   Hook into mongoose's execution _.exec()_ process
 *   Add timeouts to redis assigned values
 *   ???
 
@@ -29,6 +29,9 @@ query.then(result => console.log(result))
 ```
 
 # Need access to mongo's _.exec_ function to intercept with Redis!
+
+*   Mongoose.exec() returns Mongoose Document
+*   Redis handles JSON
 
 ## Redis functions
 
