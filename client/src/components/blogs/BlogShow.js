@@ -18,6 +18,7 @@ class BlogShow extends Component {
 			<div>
 				<h3>{ title }</h3>
 				<p>{ content }</p>
+				<button className="red btn-flat right white-text" type="submit">DELETE POST</button>
 			</div>
 		)
 	}
